@@ -5,6 +5,7 @@
 #include "tcpsocket.h"
 #include <QVariantMap>
 #include <QDateTime>
+#include "historydialog.h"
 
 namespace Ui {
     class MainForm;
@@ -19,10 +20,13 @@ private:
     Ui::MainForm *ui;
     TcpSocket *socket;
     QString Nickname;
+    QString History;
+    HistoryDialog *hd;
 private slots:
     void RecvData(const QVariantMap &qvm);
     void textChanged(const QString &text);
     void returnPressed();
+    void HistoryPressed();
 };
 
 #endif // MAINFORM_H

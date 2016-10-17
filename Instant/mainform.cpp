@@ -7,7 +7,9 @@ MainForm::MainForm(TcpSocket *socket,const QString &Nickname,QWidget *parent):QW
     connect(ui->Local,SIGNAL(textChanged(QString)),this,SLOT(textChanged(QString)));
     connect(ui->Local,SIGNAL(returnPressed()),this,SLOT(returnPressed()));
     connect(socket,SIGNAL(disconnected()),this,SLOT(close()));
+    connect(ui->HistoryButton,SIGNAL(clicked(bool)),this,SLOT(HistoryPressed()));
     setWindowTitle("Instant - "+Nickname);
+    hd=new HistoryDialog(this);
 }
 
 MainForm::~MainForm() {
@@ -19,7 +21,8 @@ void MainForm::RecvData(const QVariantMap &qvm) {
         ui->Peer->setText(qvm["content"].toString());
     } else if (qvm["type"]=="send") {
         ui->Peer->setText("");
-        ui->Common->append(QString("%1 %2\n%3\n").arg(QDateTime::currentDateTime().toString("yyyy-M-d hh:mm:ss")).arg(qvm["nickname"].toString()).arg(qvm["content"].toString()));
+        History+=QString("<p style=\"color:blue;\">%1 %2<br>%3</p>").arg(QDateTime::currentDateTime().toString("yyyy-M-d HH:mm:ss")).arg(qvm["nickname"].toString().toHtmlEscaped()).arg(qvm["content"].toString().toHtmlEscaped());
+        hd->Update(History);
     }
 }
 
@@ -33,11 +36,16 @@ void MainForm::textChanged(const QString &text) {
 void MainForm::returnPressed() {
     if (ui->Local->text().size()==0)
         return;
-    ui->Common->append(QString("%1 %2\n%3\n").arg(QDateTime::currentDateTime().toString("yyyy-M-d hh:mm:ss")).arg(Nickname).arg(ui->Local->text()));
+    History+=QString("<p style=\"text-align:right;color:green;\">%1 %2<br>%3</p>").arg(QDateTime::currentDateTime().toString("yyyy-M-d HH:mm:ss")).arg(Nickname.toHtmlEscaped()).arg(ui->Local->text().toHtmlEscaped());
+    hd->Update(History);
     QVariantMap qvm;
     qvm.insert("type","send");
     qvm.insert("nickname",Nickname);
     qvm.insert("content",ui->Local->text());
     socket->SendData(qvm);
     ui->Local->setText("");
+}
+
+void MainForm::HistoryPressed() {
+    hd->show();
 }

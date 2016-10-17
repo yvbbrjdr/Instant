@@ -10,12 +10,15 @@ SOURCES += main.cpp \
     logindialog.cpp \
     mainform.cpp \
     tcpsocket.cpp \
-    tcpserver.cpp
+    tcpserver.cpp \
+    historydialog.cpp
 
 FORMS += logindialog.ui \
-    mainform.ui
+    mainform.ui \
+    historydialog.ui
 
 HEADERS += logindialog.h \
     mainform.h \
     tcpsocket.h \
-    tcpserver.h
+    tcpserver.h \
+    historydialog.h
