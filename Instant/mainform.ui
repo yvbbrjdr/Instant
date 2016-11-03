@@ -7,12 +7,26 @@
     <x>0</x>
     <y>0</y>
     <width>466</width>
-    <height>104</height>
+    <height>164</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="QLineEdit" name="Last">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLineEdit" name="Peer">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="Sent">
      <property name="readOnly">
       <bool>true</bool>
      </property>

@@ -5,6 +5,7 @@
 #include "tcpsocket.h"
 #include <QVariantMap>
 #include <QDateTime>
+#include <QMessageBox>
 #include "historydialog.h"
 
 namespace Ui {
@@ -23,6 +24,7 @@ private:
     QString History;
     HistoryDialog *hd;
 private slots:
+    void disconnected();
     void RecvData(const QVariantMap &qvm);
     void textChanged(const QString &text);
     void returnPressed();

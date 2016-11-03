@@ -6,7 +6,7 @@ MainForm::MainForm(TcpSocket *socket,const QString &Nickname,QWidget *parent):QW
     connect(socket,SIGNAL(RecvData(QVariantMap)),this,SLOT(RecvData(QVariantMap)));
     connect(ui->Local,SIGNAL(textChanged(QString)),this,SLOT(textChanged(QString)));
     connect(ui->Local,SIGNAL(returnPressed()),this,SLOT(returnPressed()));
-    connect(socket,SIGNAL(disconnected()),this,SLOT(close()));
+    connect(socket,SIGNAL(disconnected()),this,SLOT(disconnected()));
     connect(ui->HistoryButton,SIGNAL(clicked(bool)),this,SLOT(HistoryPressed()));
     setWindowTitle("Instant - "+Nickname);
     hd=new HistoryDialog(this);
@@ -21,6 +21,7 @@ void MainForm::RecvData(const QVariantMap &qvm) {
         ui->Peer->setText(qvm["content"].toString());
     } else if (qvm["type"]=="send") {
         ui->Peer->setText("");
+        ui->Last->setText(qvm["content"].toString());
         History+=QString("<p style=\"color:blue;\">%1 %2<br>%3</p>").arg(QDateTime::currentDateTime().toString("yyyy-M-d HH:mm:ss")).arg(qvm["nickname"].toString().toHtmlEscaped()).arg(qvm["content"].toString().toHtmlEscaped());
         hd->Update(History);
     }
@@ -36,6 +37,7 @@ void MainForm::textChanged(const QString &text) {
 void MainForm::returnPressed() {
     if (ui->Local->text().size()==0)
         return;
+    ui->Sent->setText(ui->Local->text());
     History+=QString("<p style=\"text-align:right;color:green;\">%1 %2<br>%3</p>").arg(QDateTime::currentDateTime().toString("yyyy-M-d HH:mm:ss")).arg(Nickname.toHtmlEscaped()).arg(ui->Local->text().toHtmlEscaped());
     hd->Update(History);
     QVariantMap qvm;
@@ -48,4 +50,9 @@ void MainForm::returnPressed() {
 
 void MainForm::HistoryPressed() {
     hd->show();
+}
+
+void MainForm::disconnected() {
+    QMessageBox::information(this,"Instant","Your peer has logged off");
+    close();
 }
